@@ -139,7 +139,7 @@ class BatchController extends Controller
     /**
      * @var string route prefix for crud controller actions
      */
-    public $crudPathPrefix = 'crud/';
+    public $crudPathPrefix = '/crud/';
 
     /**
      * @var array list of code provider classes (fully namespaced path required)
@@ -178,6 +178,11 @@ class BatchController extends Controller
      * @var bool whether to tidy generated code
      */
     public $crudTidyOutput = true;
+
+    /**
+     * @var bool whether to fix generated code (PSR-2). Note: May take some time, depending on file size and numbers.
+     */
+    public $crudFixOutput = false;
 
     /**
      * @var string the namespace of the ActiveQuery class to be generated
@@ -240,6 +245,7 @@ class BatchController extends Controller
                 'modelGenerateLabelsFromComments',
                 'modelGenerateHintsFromComments',
                 'crudTidyOutput',
+                'crudFixOutput',
                 'crudControllerNamespace',
                 'crudSearchModelNamespace',
                 'crudSearchModelSuffix',
@@ -383,6 +389,7 @@ class BatchController extends Controller
                 'accessFilter' => $this->crudAccessFilter,
                 'baseTraits' => $this->crudBaseTraits,
                 'tidyOutput' => $this->crudTidyOutput,
+                'fixOutput' => $this->crudFixOutput,
                 'template' => $this->crudTemplate,
                 'indexWidgetType' => $this->crudIndexWidgetType,
                 'indexGridClass' => $this->crudIndexGridClass,

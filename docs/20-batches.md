@@ -2,13 +2,13 @@ Batches
 =======
 
 > ### Important Notice!
-
+>
 > It is strongly recommended, to get familiar with the CLI usage of *Gii* and *Giiant*, since the code-generation process may be repeated several times in the inital development phase and using the CLI in conjunction with a script will save you a lot of time and also reduce your error rate!
 
 Configuration
 -------------
 
-It's recommended to configure a customized `batch` command in your application CLI configuration.
+It's recommended to configure a customized `batch` command in your application CLI configuration, add the following code to your console application configuration.
 
     'controllerMap' => [
         'batch' => [

@@ -34,7 +34,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      *
      * @var string
      */
-    public $actionButtonClass = 'yii\web\grid\ActionColumn';
+    public $actionButtonClass = 'yii\grid\ActionColumn';
     /**
      * @var array relations to be excluded in UI rendering
      */
@@ -122,6 +122,11 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var bool whether to use phptidy on renderer files before saving
      */
     public $tidyOutput = true;
+
+    /**
+     * @var bool whether to use php-cs-fixer to generate PSR compatible output
+     */
+    public $fixOutput = false;
 
     /**
      * @var string form field for selecting and loading saved gii forms
@@ -347,7 +352,6 @@ class Generator extends \yii\gii\generators\crud\Generator
                 continue;
             }
             if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-                echo $file;
                 $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file", ['permisions' => $permisions]));
             }
         }
@@ -358,7 +362,6 @@ class Generator extends \yii\gii\generators\crud\Generator
              * access migration
              */
             $migrationFile = $migrationDir.'/'.$this->migrationClass.'.php';
-            //var_dump($migrationFile);exit;
             $files[] = new CodeFile($migrationFile, $this->render('migration_access.php', ['accessDefinitions' => $accessDefinitions]));
 
             /*
@@ -388,18 +391,28 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function render($template, $params = [])
     {
         $code = parent::render($template, $params);
+
+        // create temp file for code formatting
+        $tmpDir = Yii::getAlias('@runtime/giiant');
+        FileHelper::createDirectory($tmpDir);
+        $tmpFile = $tmpDir.'/'.md5($template);
+        file_put_contents($tmpFile, $code);
+
         if ($this->tidyOutput) {
-            $tmpDir = Yii::getAlias('@runtime/giiant');
-            FileHelper::createDirectory($tmpDir);
-            $tmpFile = $tmpDir.'/'.md5($template);
-            file_put_contents($tmpFile, $code);
             $command = Yii::getAlias('@vendor/bin/phptidy').' replace '.$tmpFile;
             shell_exec($command);
-
-            return file_get_contents($tmpFile);
-        } else {
-            return $code;
+            $code = file_get_contents($tmpFile);
         }
+
+        if ($this->fixOutput) {
+            $command = Yii::getAlias('@vendor/bin/php-cs-fixer').' fix '.$tmpFile;
+            shell_exec($command);
+            $code = file_get_contents($tmpFile);
+        }
+
+        unlink($tmpFile);
+
+        return $code;
     }
 
     public function validateClass($attribute, $params)

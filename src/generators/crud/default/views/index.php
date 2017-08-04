@@ -149,7 +149,7 @@ echo "?>\n"
                 $items .= <<<PHP
             [
                 'url' => ['{$route}'],
-                'label' => '<i class="glyphicon glyphicon-{$iconType}">&nbsp;' . Yii::t('$generator->modelMessageCategory', '$label') . '</i>',
+                'label' => '<i class="glyphicon glyphicon-{$iconType}"></i> ' . Yii::t('$generator->modelMessageCategory', '$label'),
             ],
                     
 PHP;
@@ -204,8 +204,8 @@ PHP;
             'buttons' => [
                 'view' => function (\$url, \$model, \$key) {
                     \$options = [
-                        'title' => Yii::t('yii', 'View'),
-                        'aria-label' => Yii::t('yii', 'View'),
+                        'title' => Yii::t('cruds', 'View'),
+                        'aria-label' => Yii::t('cruds', 'View'),
                         'data-pjax' => '0',
                     ];
                     return Html::a('<span class="glyphicon glyphicon-file"></span>', \$url, \$options);
